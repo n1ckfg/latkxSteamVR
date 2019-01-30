@@ -51,7 +51,7 @@ public class LatkInputVive : MonoBehaviour {
         // ~ ~ ~ ~ ~ ~ ~ ~ ~
 
         if (steamControllerMain.menuPressed && steamControllerAlt.menuDown) {
-            latk.inputNewLayer();
+            latk.inputDeleteFrame();
         }
 
         // dir pad main
@@ -81,7 +81,7 @@ public class LatkInputVive : MonoBehaviour {
                 if (steamControllerAlt.padDirCenter) {
                     // TODO capture
                 } else if (steamControllerAlt.padDirUp) {
-                    latk.inputFirstFrame();
+                    latk.inputNewLayer();
                 } else  if (steamControllerAlt.padDirLeft) {
                     latk.inputNextLayer();
                 } else if (steamControllerAlt.padDirRight) {
@@ -91,7 +91,7 @@ public class LatkInputVive : MonoBehaviour {
                 if (steamControllerAlt.padDirCenter) {
                     latk.inputPlay();
                 } else if (steamControllerAlt.padDirUp) {
-                    latk.inputLastFrame();
+                    latk.inputFirstFrame();
                 } else if (steamControllerAlt.padDirRight) {
                     latk.inputFrameBack();
                     StartCoroutine(repeatFrameBack());
