@@ -62,6 +62,14 @@ public class SteamVR_SevenMove : MonoBehaviour {
         centerPos = (steamCtlMain.transform.position + steamCtlAlt.transform.position) / 2f;
         if (useCenterObj && dist <= scaleTriggerDist * target.localScale.x) centerObj.transform.position = centerPos;
 
+        if (steamCtlMain.gripped && steamCtlAlt.gripped) {
+            rotMode = RotMode.AVG;
+        } else if (steamCtlMain.gripped && !steamCtlAlt.gripped) {
+            rotMode = RotMode.MAIN;
+        } else if (!steamCtlMain.gripped && steamCtlAlt.gripped) {
+            rotMode = RotMode.ALT;
+        }
+
         if (rotMode == RotMode.AVG) {
             angle = (getAngle(steamCtlMain.transform, centerPos) + getAngle(steamCtlAlt.transform, centerPos)) / 2f;
         } else if (rotMode == RotMode.MAIN) {
