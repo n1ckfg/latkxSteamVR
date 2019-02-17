@@ -6,6 +6,7 @@ public class LatkInputVive : MonoBehaviour {
 	public SteamVR_NewController steamControllerMain;
 	public SteamVR_NewController steamControllerAlt;
 	public LightningArtist latk;
+    public Renderer collisionGuideRen;
 
     private float collisionDelay = 0.2f;
     private float repeatDelay = 0.5f;
@@ -123,6 +124,7 @@ public class LatkInputVive : MonoBehaviour {
         yield return new WaitForSeconds(collisionDelay);
         if (steamControllerMain.padDirUp) {
             latk.useCollisions = !latk.useCollisions;
+            if (collisionGuideRen != null) collisionGuideRen.enabled = latk.useCollisions;
         }
     }
 
