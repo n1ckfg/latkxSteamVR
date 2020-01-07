@@ -9,32 +9,64 @@ public class SteamVR_SevenMove : MonoBehaviour {
     public SteamVR_NewController steamCtlMain;
     public SteamVR_NewController steamCtlAlt;
     public Transform target;
-	public bool clicked = false;
 
+    private bool armed = false;
+    private enum SevenMode { BOTH, MAIN, ALT, NONE };
+    private SevenMode sevenMode = SevenMode.NONE;
     private Vector3 initialHandPosition1; // first controller
     private Vector3 initialHandPosition2; // second controller
     private Quaternion initialObjectRotation; // target rotation
     private Vector3 initialObjectScale; // target scale
     private Vector3 initialObjectDirection; // direction of target to midpoint of both controllers
+    private Transform origParent = null;
 
-    private void Update() {
-        if (clicked) {
-            if (!steamCtlMain.gripped && !steamCtlAlt.gripped) {
-                clicked = false;
-                return;
-            } else {
-                updateTarget();
-            }
-        } else {
-            if (steamCtlMain.gripDown || steamCtlAlt.gripDown) {
-                attachTarget();
-                updateTarget();
-                clicked = true;
-            }
-        }
+    private void Start() {
+        origParent = target.parent;
     }
 
-    private void attachTarget() {
+    private void Update() {
+        if (steamCtlMain.gripDown || steamCtlAlt.gripDown) {
+            target.SetParent(origParent);
+            armed = true;
+        }
+
+        if (steamCtlMain.gripped && steamCtlAlt.gripped) {
+            sevenMode = SevenMode.BOTH;
+        } else if (steamCtlMain.gripped && !steamCtlAlt.gripped) {
+            sevenMode = SevenMode.MAIN;
+        } else if (!steamCtlMain.gripped && steamCtlAlt.gripped) {
+            sevenMode = SevenMode.ALT;
+        } else if (!steamCtlMain.gripped && !steamCtlAlt.gripped) {
+            sevenMode = SevenMode.NONE;
+            target.SetParent(origParent);
+            armed = false;
+            return;
+        }
+
+        if (armed) {
+            switch (sevenMode) {
+                case SevenMode.BOTH:
+                    attachTargetBoth();
+                    break;
+                case SevenMode.MAIN:
+                    attachTargetOne(ref steamCtlMain);
+                    break;
+                case SevenMode.ALT:
+                    attachTargetOne(ref steamCtlAlt);
+                    break;
+            }
+            armed = false;
+        }
+
+        switch (sevenMode) {
+            case SevenMode.BOTH:
+                updateTargetBoth();
+                break;
+        }
+
+    }
+
+    private void attachTargetBoth() {
         initialHandPosition1 = steamCtlMain.transform.position;
         initialHandPosition2 = steamCtlAlt.transform.position;
         initialObjectRotation = target.transform.rotation;
@@ -42,7 +74,7 @@ public class SteamVR_SevenMove : MonoBehaviour {
         initialObjectDirection = target.transform.position - (initialHandPosition1 + initialHandPosition2) * 0.5f; 
     }
 
-    private void updateTarget() {
+    private void updateTargetBoth() {
         Vector3 currentHandPosition1 = steamCtlMain.transform.position; // current first hand position
         Vector3 currentHandPosition2 = steamCtlAlt.transform.position; // current second hand position
 
@@ -62,6 +94,10 @@ public class SteamVR_SevenMove : MonoBehaviour {
         
         // set the position of the object to the center of both hands based on the original object direction relative to the new scale and rotation
         target.transform.position = (0.5f * (currentHandPosition1 + currentHandPosition2)) + (handRot * (initialObjectDirection * p));
+    }
+
+    private void attachTargetOne(ref SteamVR_NewController ctl) {
+        target.SetParent(ctl.transform);
     }
 
 }
