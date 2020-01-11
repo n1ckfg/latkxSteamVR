@@ -55,6 +55,13 @@ public class LatkInputVive : MonoBehaviour {
             latk.inputDeleteFrame();
         }
 
+        // *** write ***
+        if (steamControllerMain.padDirDown && steamControllerAlt.padDirDown) {
+            if ((steamControllerMain.padDown && steamControllerAlt.padPressed) || (steamControllerMain.padPressed && steamControllerAlt.padDown)) {
+                if (!latk.isWritingFile) latk.armWriteFile = true;
+            }
+        }
+
         // dir pad main
         if (steamControllerMain.padDown) {
             if (steamControllerMain.padDirCenter) {
