@@ -4,7 +4,7 @@ using UnityEngine;
 
 // https://www.reddit.com/r/Unity3D/comments/a6rmbh/vr_question_steamvr_2_scale_object_with_both_hands/
 
-public class SteamVR_SevenMove : MonoBehaviour {
+public class SteamVR_WorldScale : MonoBehaviour {
 
     public SteamVR_NewController steamCtlMain;
     public SteamVR_NewController steamCtlAlt;
